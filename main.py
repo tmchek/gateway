@@ -17,7 +17,7 @@ from datetime import datetime, timedelta
 api_id = '20230546' # Keep this as it is 
 api_hash = '687aa22188883fd3d995a41c928454fe' # same heree
 client_token = '7435061203:AAG-EN97KuKHc0VTQmC8Wxi3c_jWbmclstE'
-LOG_GROUP_ID = -1002277253805  # Ajusta con tu ID real del canal con el prefijo -100
+LOG_GROUP_ID = -1002564858424  # Ajusta con tu ID real del canal con el prefijo -100
 
 #coded by @AnukarOP 
 
@@ -574,7 +574,7 @@ async def report_step(event):
                         user = event.sender
                         checked = f"[{user.first_name}](tg://user?id={user.id})" if user.username else user.first_name
                         ch_name = '『🇩🇴』'
-                        ch_id = '🇩🇴Live ™𝙁𝘼𝙈𝙄𝙇𝙔-𝙏𝙀𝘼𝙈🇩🇴'
+                        ch_id = '🇩🇴scapasarelas👑'
                         ch = f"[{ch_name}](https://t.me/{ch_id})"
                         end_time = time.time()
                         time_taken = end_time - start_time
@@ -594,7 +594,7 @@ async def report_step(event):
                             user = event.sender
                             checked = f"[{user.first_name}](tg://user?id={user.id})" if user.username else user.first_name
                             ch_name = '『🇩🇴』'
-                            ch_id = '-1002274865143'
+                            ch_id = '-1002564858424'
                             ch = f"[{ch_name}](tg://user?id={ch_id})"
                             user_id = event.sender.id
                             current_time = datetime.now()
