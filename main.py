@@ -21,7 +21,7 @@ LOG_GROUP_ID = -1002564858424  # Ajusta con tu ID real del canal con el prefijo 
 
 #coded by @AnukarOP 
 
-admin_ids = [7142974885, 7142974665, 7142974443]  # Example admin IDs
+admin_ids = [7142974885, 7695859438, 7142974443]  # Example admin IDs
 
 def is_user_admin(user_id):
     return user_id in admin_ids
@@ -36,7 +36,7 @@ credits = {}
 global credit
 credit = {}
 generated_codes = []
-vip = [7142974885,7142974644,7142974423]
+vip = [7142974885,7695859438,7142974423]
 def normalize_url(url):
     parsed_url = urllib.parse.urlparse(url)
     normalized_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
@@ -74,122 +74,27 @@ def read_user_credit(user_id):
             return int(file.read())
     return 0
 @client.on(events.NewMessage(pattern='/refresh'))
-async def handle_create(event):
+async def handle_refresh(event):
     user_id = event.sender_id
 
-    # Read user's credit from file
-    user_credit_file = f"{user_id}_credit.txt"
-    if os.path.exists(user_credit_file):
-        with open(user_credit_file, "r") as file:
-            global credit_value
-            credit_value = int(file.read())
-    else:
-        credit_value = 0
+    # Solo permitir si el usuario está registrado (VIP o Premium)
+    if user_id not in vip and user_id not in pre:
+        await event.respond("🚫 You are not registered to use this feature.")
+        return
 
+    # Verificar si ya hizo refresh
+    if user_id in r_us:
+        await event.respond("✅ 𝗔𝗹𝗿𝗲𝗮𝗱𝘆 𝗿𝗲𝗳𝗿𝗲𝘀𝗵𝗲𝗱.")
+        return
 
-    if user_id in pre:
-        if user_id in r_us:
-            await event.respond('𝗔𝗹𝗿𝗲𝗮𝗱𝘆 𝗿𝗲𝗳𝗿𝗲𝘀𝗵𝗶𝗻𝗴 𝗱𝗼𝗻𝗲!')
-        else:
-            credit_value += 25
-            await event.respond('💫')
-            r_us.append(user_id)
-            
-    elif user_id in vip:
-        if user_id in r_us:
-            await event.respond('𝗔𝗹𝗿𝗲𝗮𝗱𝘆 𝗿𝗲𝗳𝗿𝗲𝘀𝗵𝗶𝗻𝗴 𝗱𝗼𝗻𝗲!')
-        else:
-            credit_value += 50000
-            await event.respond('💫')
-    else:
-        if user_id in r_us:
-            await event.respond('𝗔𝗹𝗿𝗲𝗮𝗱𝘆 𝗿𝗲𝗳𝗿𝗲𝘀𝗵𝗶𝗻𝗴 𝗱𝗼𝗻𝗲!')
-        else:
-            credit_value += 5
-        await event.respond('💫')
-        r_us.append(user_id)
-    with open(user_credit_file, "w") as file:
-        file.write(str(credit_value))
-@client.on(events.NewMessage(pattern='/info'))
-async def handle_create(event):
-    user_id = event.sender_id
-    user_credit_file = f"{user_id}_credit.txt"
-    if os.path.exists(user_credit_file):
-        with open(user_credit_file, "r") as file:
-            user_credit = int(file.read())
-    else:
-        user_credit = 0
+    # Ejecutar acción sin créditos
     if user_id in vip:
-        user = event.sender
-        user_id = event.sender.id
-        creditz = credit.get(user_id,0)
-        fn = f"[{user.first_name}](tg://user?id={user.id})"
-        ai = f"[{user.id}!](tg://user?id={user.id})"
-        await event.respond(f"""**Your Details** 🔐
-𝙒𝙚𝙡𝙘𝙤𝙢𝙚 {fn}
-**See your account status:**
-
-👨🏻‍💼 Plan: `VIP 👑`
-💳 Credits: `♾️`
-
-🔥 Status:
-⊛ Account ID: `{event.sender.id}`
-⊛ Name: {fn}""", reply_to=event)
+        await event.respond("👑 𝗥𝗲𝗳𝗿𝗲𝘀𝗵 𝗰𝗼𝗺𝗽𝗹𝗲𝘁𝗲 𝗳𝗼𝗿 𝗩𝗜𝗣!")
     elif user_id in pre:
-        user = event.sender
-        user_id = event.sender.id
-        creditx = credit.get(user_id,0)
-        fn = f"[{user.first_name}](tg://user?id={user.id})"
-        ai = f"[{user.id}!](tg://user?id={user.id})"
-        await event.respond(f"""**Your Details** 🔐
-𝙒𝙚𝙡𝙘𝙤𝙢𝙚 {fn}
-**See your account status:**
+        await event.respond("💼 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 𝗮𝗰𝗰𝗼𝘂𝗻𝘁 𝗿𝗲𝗳𝗿𝗲𝘀𝗵𝗲𝗱!")
 
-👨🏻‍💼 Plan: `Premium`
-💳 Credits: `{user_credit}`
-
-🔥 Status:
-⊛ Account ID: `{event.sender.id}`
-⊛ Name: {fn}""", reply_to=event)
-    else:
-        user = event.sender
-        user_id = event.sender.id
-        creditz = credit.get(user_id)
-        fn = f"[{user.first_name}](tg://user?id={user.id})"
-        ai = f"[{user.id}!](tg://user?id={user.id})"
-        
-        await event.respond(f"""**Your Details** 🔐
-𝙒𝙚𝙡𝙘𝙤𝙢𝙚 {fn}
-**See your account status:**
-
-👨🏻‍💼 Plan: `Free`
-💳 Credits: `{user_credit}`
-
-🔥 Status:
-⊛ Account ID: `{event.sender.id}`
-⊛ Name: {fn}""", reply_to=event)
-@client.on(events.NewMessage(pattern='/codes'))
-async def handle_create(event):
-    user_id = event.sender_id
-    if user_id in vip:
-        await event.respond('🔹𝗧𝗵𝗲𝘀𝗲 𝗮𝗿𝗲 𝘁𝗵𝗲 𝗖𝗼𝗱𝗲𝘀 𝘄𝗵𝗶𝗰𝗵 𝘄𝗲𝗿𝗲 𝗴𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 𝗮𝗻𝗱 𝗻𝗼𝘁 𝘂𝘀𝗲𝗱 𝘆𝗲𝘁. \n\n'+str(generated_codes))
-@client.on(events.NewMessage(pattern='/create'))
-async def handle_create(event):
-    user_id = event.sender_id
-    if user_id in vip:
-        try:
-            _, num_codes = event.raw_text.split()
-            num_codes = int(num_codes)
-            codes = [generate_redeem_code() for _ in range(num_codes)]
-            generated_codes.extend(codes)
-            code_message = ' ┏━━━━━━━⍟\n┃ 𝗛𝗲𝗿𝗲 𝗶𝘀 𝘆𝗼𝘂𝗿 𝗥𝗲𝗱𝗲𝗲𝗺 𝗰𝗼𝗱𝗲𝘀 ✅\n┗━━━━━━━━━━━⊛\n\n⊙ ' + '\n⊙ '.join(f'`{code}`' for code in codes) + ' \n\n━━━━━━━━━━━━━━━━\nPlease note that `02` credits each. You can redeem them using the command \n`/redeem` (@GatewayLookupbot)'
-            await event.respond(code_message, parse_mode='Markdown')
-        except (ValueError, TypeError):
-            pass
-
-def generate_redeem_code():
-    code = '-'.join(''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(4)) for _ in range(4))
-    return code
+    # Marcar como ya usado
+    r_us.append(user_id)
 
 
 @client.on(events.NewMessage(pattern='/redeem'))
@@ -480,38 +385,32 @@ async def cmd_start(event):
 
 @client.on(events.NewMessage(pattern='/bh'))
 async def report(event):
-    global user_credit_file
-    user_id = event.sender.id
-    global rw
-    global tx
+    global rw, tx, edit, start_time
+
+    user_id = event.sender_id
     rw = event.raw_text
     tx = event.text
-    nu=None        
-            
-    creditx = credit.get(user_id, 0)
-    user_credit_file = f"{user_id}_credit.txt"
-    if os.path.exists(user_credit_file):
-                with open(user_credit_file, "r") as file:
-                    credit_value = int(file.read())
-    else:
-                credit_value = 0
+
+    # Validar si está registrado
+    if user_id not in vip and user_id not in pre:
+        await event.respond('🚫 You are not registered to use this command.\nPlease upgrade to Premium or VIP.', reply_to=event)
+        return
+
+    # Validar comando correcto
     if event.text.strip() == "/bh":
         await event.respond("⚠ 𝗪𝗿𝗼𝗻𝗴 𝗰𝗼𝗺𝗺𝗮𝗻𝗱 𝗳𝗼𝗿𝗺𝗮𝘁!\n𝗨𝘀𝗲 `/bh instagram.com` 𝘄𝗶𝘁𝗵𝗼𝘂𝘁 `https://`", reply_to=event)
-        return            
-    if credit_value <= 0:
-        await event.respond('**Credits Finished! Try /refresh** or \nBuy 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 for Unlimited usage 👑.\n𝗦𝗵𝗼𝗽 ➜ [ONE TECH](https://www.tmfamilychk.online/product/gateway-v2)',reply_to=event, parse_mode='Markdown')
-    else:
-                global edit
-                edit = await event.respond('𝗬𝗼𝘂𝗿 𝗥𝗲𝗾𝘂𝗲𝘀𝘁 𝗶𝘀 𝗶𝗻 𝗣𝗿𝗼𝗴𝗿𝗲𝘀𝘀...', reply_to=event)
-                global start_time
-                start_time = time.time()
-                site_checking[user_id] = {"step": 1}
+        return
+
+    # Procesamiento principal sin créditos
+    edit = await event.respond('𝗬𝗼𝘂𝗿 𝗥𝗲𝗾𝘂𝗲𝘀𝘁 𝗶𝘀 𝗶𝗻 𝗣𝗿𝗼𝗴𝗿𝗲𝘀𝘀...', reply_to=event)
+    start_time = time.time()
+    site_checking[user_id] = {"step": 1}
+
    
 
 
 @client.on(events.NewMessage(func=lambda event: event.sender_id in site_checking))
 async def report_step(event):
-    global user_credit_file
     try:
         if '.' in rw:
             user_id = event.sender_id
@@ -519,7 +418,7 @@ async def report_step(event):
             w_url = normalize_url(url)
             global domain
             domain = url.split('//')[-1].split('/')[0]
-            response = requests.get("http://" +domain)
+            response = requests.get("http://" + domain)
             html_content = response.text
             captcha = ('captcha' in html_content.lower() or
                        'protected by reCAPTCHA' in html_content.lower() or
@@ -534,9 +433,8 @@ async def report_step(event):
             if not website_url.startswith(("http://", "https://")):
                 w_url = "http://" + website_url
                 payment_gateways = find_payment_gateway(w_url)
+
                 if "Error" in payment_gateways:
-                    await event.edit("Provide Valid URL, or Maybe Site issue :)")
-                elif "Unknown" in payment_gateways:
                     ch_name = '『🇩🇴』'
                     ch_id = 'onetechpatron'
                     ch = f"[{ch_name}](https://t.me/{ch_id})"
@@ -589,7 +487,7 @@ async def report_step(event):
                         
                         
                         if credit ==0:
-                            await event.respond('**Credits Finished! Try /refresh** or \nBuy 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 for Unlimited usage 👑.\n𝗦𝗵𝗼𝗽 ➜ [teamfamily](https://www.tmfamilychk.online/product/gateway-v2)', reply_to=event)
+                            await event.respond('**Credits Finished! Try /refresh** or \nBuy 𝗣𝗿𝗲𝗺𝗶𝘂𝗺 for Unlimited usage 👑.\n𝗦𝗵𝗼𝗽 ➜ [teamfamily](@OneTechPatron)', reply_to=event)
                         else:
                             user = event.sender
                             checked = f"[{user.first_name}](tg://user?id={user.id})" if user.username else user.first_name
@@ -627,4 +525,5 @@ async def report_step(event):
     except Exception as e:
         print(e)
 client.start()
+client.run_until_disconnected()
 client.run_until_disconnected()
